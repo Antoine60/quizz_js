@@ -26,7 +26,7 @@ function createQuizz() {
         const answers = [];
         for (const [answerValue, textAnswer] of Object.entries(question.answers)) {
             answers.push(
-                `<label><input class="answer" name="q${questionNumber}" type="checkbox" value="${answerValue}">
+                `<label><input class="answer" name="q${questionNumber}" type="radio" value="${answerValue}">
                     ${answerValue} : ${textAnswer}
                     </label><br>`
             )
@@ -37,20 +37,26 @@ function createQuizz() {
 
 function correctAnwsers() {
     //todo get all answers of page
+    let correctReponse = 0;
     quizzContent = document.getElementById('quizz');
-    allAnswers = quizzContent.querySelectorAll('.answers')
+    allAnswers = quizzContent.querySelectorAll('.answers');
+    response = document.getElementById('response');
+
     //On parcourt les questions
     myQuestions.forEach((question, questionNumber) => {
         containerReponse = allAnswers[questionNumber];
         //pour chacune des questions on regarde celle qui a été selectionné
         let selector = `input[name=q${questionNumber}]:checked`;
         let selectedReponse = containerReponse.querySelector(selector) || null;
-        if(selectedReponse !== null && selectedReponse.value == myQuestions[questionNumber].correctAnswer){
-            console.log('bonne réponse');
-        }else{
-            console.log('mauvaise réponse !!!');
+        if (selectedReponse !== null && selectedReponse.value == myQuestions[questionNumber].correctAnswer) {
+            correctReponse++;
+            allAnswers[questionNumber].style.color = 'lightgreen';
+        } else {
+            allAnswers[questionNumber].style.color = 'lightsalmon';
         }
     })
+    //On affiche le résultat :
+    response.innerHTML = `Bonnes reponses : ${correctReponse} sur ${allAnswers.length}`
 }
 
 createQuizz();
