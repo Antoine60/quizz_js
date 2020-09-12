@@ -8,15 +8,15 @@ const myQuestions = [
         },
         correctAnswer: "c"
     },
-    {
-        question: "Question B",
-        answers: {
-            a: "Reponse A2",
-            b: "Reponse B2",
-            c: "Reponse C2"
-        },
-        correctAnswer: "c"
-    },
+    // {
+    //     question: "Question B",
+    //     answers: {
+    //         a: "Reponse A2",
+    //         b: "Reponse B2",
+    //         c: "Reponse C2"
+    //     },
+    //     correctAnswer: "c"
+    // },
 ];
 
 function createQuizz() {
@@ -24,14 +24,16 @@ function createQuizz() {
     myQuestions.forEach((question, questionNumber) => {
         quizzContent.innerHTML += question.question + '<br>';
         const answers = [];
+        let idNumber = 0;
         for (const [answerValue, textAnswer] of Object.entries(question.answers)) {
+            ++idNumber;
             answers.push(
-                `<label><input class="answer" name="q${questionNumber}" type="radio" value="${answerValue}">
-                    ${answerValue} : ${textAnswer}
-                    </label><br>`
+                `<li><input class="answer" id="${idNumber}" name="q${questionNumber}" type="radio" value="${answerValue}">
+                    <label for="${idNumber}">${answerValue} : ${textAnswer}
+                    </label></li>`
             )
         }
-        quizzContent.innerHTML += `<div class='answers'>${answers.join('')}</div>`;
+        quizzContent.innerHTML += `<ul class='answers'>${answers.join('')}</ul>`;
     })
 }
 
