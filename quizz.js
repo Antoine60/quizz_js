@@ -1,65 +1,94 @@
+var currentQuestion = 0;
+var score = 0;
 const myQuestions = [
     {
-        question: "Question A",
+        question:  "What is the scientific name of a butterfly?",
         answers: {
-            a: "Reponse A",
-            b: "Reponse B",
-            c: "Reponse C"
+            a: "Apis",
+            b: "Coleoptera",
+            c: "Formicidae",
+            d: "Rhopalocera"
         },
         correctAnswer: "c"
     },
-    // {
-    //     question: "Question B",
-    //     answers: {
-    //         a: "Reponse A2",
-    //         b: "Reponse B2",
-    //         c: "Reponse C2"
-    //     },
-    //     correctAnswer: "c"
-    // },
+    {
+        question: "How hot is the surface of the sun?",
+        answers: {
+            a: "1,233 K",
+            b: "5,778 K",
+            c: "12,130 K"
+        },
+        correctAnswer: "a"
+    },
+    {
+        question: "What is the capital of Spain?",
+        answers: {
+            a: "Berlin",
+            b: "Buenos Aires",
+            c: "Madrid"
+        },
+        correctAnswer: "c"
+    },
+    {
+        question: "How tall is Mount Everest?",
+        answers: {
+            a: "6,683 ft (2,037 m)",
+            b: "7,918 ft (2,413 m)",
+            c: "19,341 ft (5,895 m)",
+            d: "29,029 ft (8,847 m)"
+        },
+        correctAnswer: "c"
+    },
 ];
 
-function createQuizz() {
+function loadQuizz() {
+
     quizzContent = document.getElementById('quizz');
-    myQuestions.forEach((question, questionNumber) => {
-        quizzContent.innerHTML += question.question + '<br>';
-        const answers = [];
-        let idNumber = 0;
-        for (const [answerValue, textAnswer] of Object.entries(question.answers)) {
-            ++idNumber;
-            answers.push(
-                `<li><input class="answer" id="${idNumber}" name="q${questionNumber}" type="radio" value="${answerValue}">
+
+    const currentQuizzData = myQuestions[currentQuestion];
+    // myQuestions.forEach((question, questionNumber) => {
+
+    quizzContent.innerHTML = currentQuizzData.question + '<br>';
+    const answers = [];
+    let idNumber = 0;
+    for (const [answerValue, textAnswer] of Object.entries(currentQuizzData.answers)) {
+        ++idNumber;
+        answers.push(
+            `<li><input class="answer" id="${idNumber}" name="q${currentQuestion}" type="radio" value="${answerValue}">
                     <label for="${idNumber}">${answerValue} : ${textAnswer}
                     </label></li>`
-            )
-        }
-        quizzContent.innerHTML += `<ul class='answers'>${answers.join('')}</ul>`;
-    })
+        )
+    }
+
+    quizzContent.innerHTML += `<ul class='answers'>${answers.join('')}</ul>`;
+
 }
 
-function correctAnwsers() {
-    //todo get all answers of page
-    let correctReponse = 0;
-    quizzContent = document.getElementById('quizz');
-    allAnswers = quizzContent.querySelectorAll('.answers');
-    response = document.getElementById('response');
-
-    //On parcourt les questions
-    myQuestions.forEach((question, questionNumber) => {
-        containerReponse = allAnswers[questionNumber];
-        //pour chacune des questions on regarde celle qui a été selectionné
-        let selector = `input[name=q${questionNumber}]:checked`;
-        let selectedReponse = containerReponse.querySelector(selector) || null;
-        if (selectedReponse !== null && selectedReponse.value == myQuestions[questionNumber].correctAnswer) {
-            correctReponse++;
-            allAnswers[questionNumber].style.color = 'lightgreen';
-        } else {
-            allAnswers[questionNumber].style.color = 'lightsalmon';
+function getSelectedAnswer() {
+    allAnswers = quizzContent.querySelectorAll('.answer');
+    let answer = undefined;
+    allAnswers.forEach((element) => {
+        if (element.checked) {
+            answer = element.value;
         }
-    })
-    //On affiche le résultat :
-    response.innerHTML = `Bonnes reponses : ${correctReponse} sur ${allAnswers.length}`
+    });
+    return answer;
 }
 
-createQuizz();
-document.getElementById('submit').addEventListener('click', correctAnwsers);
+loadQuizz();
+document.getElementById('submit').addEventListener('click', () => {
+    const answer = getSelectedAnswer();
+    if (answer) {
+        if (answer === myQuestions[currentQuestion].correctAnswer) {
+            score++;
+        }
+        currentQuestion++;
+    }
+    if (currentQuestion >= myQuestions.length) {
+        quizz = document.getElementById('quizz-container');
+        quizz.innerHTML = `You get a score of ${score}/${myQuestions.length}
+        <button onclick=location.reload()>Reload</button>`;
+    } else {
+        loadQuizz();
+    }
+});
